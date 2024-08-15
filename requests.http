@@ -1,0 +1,8 @@
+@baseUrl = http://localhost
+##Alterar a porta de acordo com a exposição do serviço pelo Kubernetes
+@port = 3333
+@host = {{baseUrl}}:{{port}}
+
+### Post new category
+# @name newCategory
+GET {{host}}/metrics
