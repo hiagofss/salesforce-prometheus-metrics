@@ -1,6 +1,6 @@
 import app from './app.js';
 
-const PORT = parseInt(process.env.PORT) || 3333;
+const PORT = parseInt(process.env.PORT) || 3000;
 
 const stopServer = async () => {
   try {
