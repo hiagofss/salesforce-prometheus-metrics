@@ -12,7 +12,7 @@ services:
     networks:
       - internal
   grafana:
-    container_name: monitoring-grafana
+    container_name: grafana
     image: grafana/grafana:latest
     hostname: grafana
     restart: unless-stopped
@@ -29,7 +29,7 @@ services:
     depends_on:
       - prometheus
   prometheus:
-    container_name: monitoring-prometheus
+    container_name: prometheus
     image: prom/prometheus:latest
     hostname: prometheus
     restart: unless-stopped
@@ -57,6 +57,8 @@ services:
       - '9093:9093'
     expose:
       - 9093
+    networks:
+      - internal
     volumes:
       - ./alertmanager:/etc/alertmanager
     command:

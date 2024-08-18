@@ -1,18 +1,21 @@
 global:
   resolve_timeout: 5m
 route:
-  group_by: ['alertname', 'severity']
-  group_wait: 10s
-  group_interval: 5m
-  repeat_interval: 3h
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 15s
+  repeat_interval: 1m
+  receiver: 'telegram-receiver'
+
+  routes:
+    - receiver: 'telegram-receiver'
+      match:
+        severity: 'critical'
+
 receivers:
-  - name: 'email-notification'
-    email_configs:
-      - to: 'hiagofss98@gmail.com'
-        send_resolved: true
-inhibit_rules:
-  - source_match:
-      severity: 'critical'
-    target_match:
-      severity: 'warning'
-    equal: ['alertname', 'instance']
+  - name: 'telegram-receiver'
+    telegram_configs:
+      - api_url: 'https://api.telegram.org'
+        bot_token: 'YOUR_BOT_TOKEN'
+        chat_id: 'YOUR_CHAT_ID'
+        parse_mode: ''

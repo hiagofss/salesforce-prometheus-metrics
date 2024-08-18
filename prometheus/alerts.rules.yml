@@ -1,0 +1,12 @@
+groups:
+  - name: App
+    rules:
+      - alert: MaxHttpRequests
+        expr: http_requests_total > 2
+        for: 10s
+        labels:
+          severity: critical
+          team: app
+        annotations:
+          summary: 'MaxHttpRequests'
+          description: 'MaxHttpRequests'
