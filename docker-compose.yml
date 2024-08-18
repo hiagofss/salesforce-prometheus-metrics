@@ -1,0 +1,69 @@
+name: salesforce-monitoring
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '${PORT}:${PORT}'
+    env_file:
+      - .env
+    networks:
+      - internal
+  grafana:
+    container_name: monitoring-grafana
+    image: grafana/grafana:latest
+    hostname: grafana
+    restart: unless-stopped
+    user: '472'
+    networks:
+      - internal
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./grafana/.env
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+  prometheus:
+    container_name: monitoring-prometheus
+    image: prom/prometheus:latest
+    hostname: prometheus
+    restart: unless-stopped
+    user: 'root'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - internal
+    expose:
+      - 9090
+    ports:
+      - '9090:9090'
+    env_file:
+      - ./prometheus/.env
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus:/etc/prometheus/
+  alertmanager:
+    container_name: alertmanager
+    image: prom/alertmanager:latest
+    hostname: alertmanager
+    restart: unless-stopped
+    ports:
+      - '9093:9093'
+    expose:
+      - 9093
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+networks:
+  internal:
+    driver: bridge
+volumes:
+  prometheus-data:
+  grafana-data:
