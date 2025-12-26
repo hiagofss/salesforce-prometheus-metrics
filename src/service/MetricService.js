@@ -40,15 +40,20 @@ export class MetricsService {
   }
 
   static generateMetric(resource, type, value) {
-    const metricName = `salesforce_limit_${resource}_${type}`;
+    let resourceCleaned = resource
+      .replaceAll(' ', '')
+      .replaceAll('.', '')
+      .replaceAll('-', '');
+    const metricName = `salesforce_limit_${resourceCleaned}_${type}`;
 
+    console.info(`Generating metric: ${metricName} with value: ${value}`);
     let gaugeMetric = register.getSingleMetric(metricName);
 
     if (!gaugeMetric) {
       gaugeMetric = new Gauge({
         name: metricName,
         help: `${resource}_${type} help`,
-        labelNames: [resource, type],
+        labelNames: [resourceCleaned, type],
         value: value,
       });
 
